@@ -116,7 +116,12 @@ jQuery(function($){
       var v = $this.val();
 
       if(old_input != v){
-        $("#result").html(search(v,dict).replace(/\n/g, "<br>"));
+        if(v != ""){
+          if(v == "*"){
+            v = "";
+          }
+          $("#result").html(search(v,dict).replace(/\n/g, "<br>"));
+        }
       }
 
       old_input = v;
