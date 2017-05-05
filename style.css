@@ -1,0 +1,18 @@
+body {
+  margin: 10px;
+}
+
+#result {
+  margin-top: 1em;
+}
+
+.key {
+  display: inline-block;
+  font-weight: bold;
+  background: #ffff77;
+  padding: 5px;
+}
+
+.type {
+  color: #999999;
+}
