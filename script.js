@@ -69,8 +69,10 @@ function endsWith(str, suffix){
   return str.match(suffix+"$")==suffix;
 }
 
-function search(keyword,dict){
+function search(keyword,dict,opts){
   var keys = [];
+
+  var roots_only = (typeof opts["roots_only"] !== "undefined");
 
   for (var k in dict){
     if (dict.hasOwnProperty(k)) {
@@ -88,8 +90,10 @@ function search(keyword,dict){
       var key = keys[i];
       var type = "";
       if(startsWith(key,"-")){
+        if(roots_only){ continue; }
         type = '<span class="type suffix">接尾</span>';
       }else if(endsWith(key,"-")){
+        if(roots_only){ continue; }
         type = '<span class="type prefix">接頭</span>';
       }else{
         type = '<span class="type root">語根</span>';
@@ -108,7 +112,26 @@ jQuery(function($){
     var old_input = "";
 
     var dict = createDict(gokan);
-    window.dict = dict;
+
+    function searchTrigger(){
+        var text = $("#input").val();
+        var opts = {};
+
+        if(text == ""){
+          return;
+        }
+
+        if(text == "*"){
+          text = "";
+        }
+
+        if($("#roots_only").is(":checked")){
+          opts["roots_only"] = true;
+        }
+
+        var res = search(text,dict,opts);
+        $("#result").html(res.replace(/\n/g, "<br>"));
+    }
 
     $("#input").keyup(function(e){
       e.preventDefault();
@@ -116,15 +139,15 @@ jQuery(function($){
       var v = $this.val();
 
       if(old_input != v){
-        if(v != ""){
-          if(v == "*"){
-            v = "";
-          }
-          $("#result").html(search(v,dict).replace(/\n/g, "<br>"));
-        }
+        searchTrigger();
       }
 
       old_input = v;
+    });
+
+    $("#roots_only").change(function(e){
+      e.preventDefault();
+      searchTrigger();
     });
 
     $("#loading").hide();
